@@ -29,3 +29,43 @@
     ./manage.py runserver
 
 Visit http://localhost:8000/graphiql
+
+
+## Query String
+
+    query {
+      person(id:"1") {
+        id
+        firstName
+        lastName
+        email
+        friends {
+          firstName
+          email
+        }
+      }
+    }
+    
+## 导出 Schema
+安装之后
+
+    INSTALLED_APPS += ('graphene_django')
+
+可以使用如下命令导出 Schema
+
+    ./manage.py graphql_schema --schema zero_django.schema.schema --out schema.json
+    
+更多参考[这里](http://docs.graphene-python.org/projects/django/en/latest/introspection/)
+   
+## create app
+
+    django-admin.py startapp ingredients
+    
+    
+## loadata
+
+    python manage.py loaddata ingredients/ingredients.json
+    
+## reference
+
+- <https://www.youtube.com/embed/UBGzsb2UkeY>

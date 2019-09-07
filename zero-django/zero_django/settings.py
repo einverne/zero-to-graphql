@@ -36,10 +36,11 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
+    'django.contrib.staticfiles',   # Required for GraphiQL
     'people',
     'django_graphiql',
     'graphene_django',
+    'ingredients',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -125,3 +126,8 @@ STATIC_URL = '/static/'
 
 # Override the default auth user model to something more personable
 AUTH_USER_MODEL = 'people.Person'
+
+GRAPHENE = {
+    'SCHEMA': 'zero_django.schema.schema',
+    'SCHEMA_OUTPUT': 'schema.json'
+}
