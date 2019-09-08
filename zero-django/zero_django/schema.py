@@ -14,15 +14,16 @@ import people.schema
 #     def mutate(self, info, username):
 #         person = Person(username=username)
 #         return CreateUser(person=person)
-#
-#
-class Mutation(
-    ingredients.schema.Mutation):
+
+
+class Mutation(ingredients.schema.Mutation,
+               graphene.ObjectType):
     pass
 
 
 class Query(people.schema.QueryType,
-        ingredients.schema.Query):
+        ingredients.schema.Query,
+            graphene.ObjectType):
     pass
 
 

@@ -3,10 +3,13 @@
 
 import graphene
 from graphene import relay
+from graphene_django import DjangoConnectionField
 
 from graphene_django.types import DjangoObjectType
 
 from ingredients.models import Category, Ingredient
+
+from utils.connection import CountableConnectionBase
 
 
 class CategoryType(DjangoObjectType):
@@ -17,25 +20,35 @@ class CategoryType(DjangoObjectType):
         model = Category
         # fields = ('',)
         # exclude = ('',)
+        filter_fields = {
+            'name': ['exact', 'icontains'],
+            'ingredients': ['exact']}
+        interfaces = (relay.Node, )
+        connection_class = CountableConnectionBase
 
 
 class IngredientType(DjangoObjectType):
     class Meta:
         model = Ingredient
+        filter_fields = {
+            'name': ['exact', 'icontains', 'istartswith'],
+            'notes': ['exact', 'icontains'],
+            'category': ['exact'],
+            'category__name': ['exact'],
+        }
         interfaces = (relay.Node,)
+        connection_class = CountableConnectionBase
 
 
-class IngredientConnection(relay.Connection):
-    class Meta:
-        node = IngredientType
+class Query(graphene.ObjectType):
+    # all_categories = graphene.List(CategoryType)
+    # all_ingredients = graphene.List(IngredientType)
 
+    # category = relay.Node.Field(CategoryType)
+    # ingredient = relay.Node.Field(IngredientType)
 
-class Query(object):
-    all_categories = graphene.List(CategoryType)
-    all_ingredients = graphene.List(IngredientType)
-
-    a_ingredients = relay.ConnectionField(IngredientConnection)
-
+    all_categories = DjangoConnectionField(CategoryType)
+    all_ingredients = DjangoConnectionField(IngredientType)
     category = graphene.Field(CategoryType,
                               id=graphene.Int(),
                               name=graphene.String())
@@ -72,9 +85,6 @@ class Query(object):
             return Ingredient.objects.get(name=name)
 
         return None
-
-    def resolve_a_ingredient(self, info, **kwargs):
-        return Ingredient.objects.all()
 
 
 class CreateCategory(graphene.Mutation):
